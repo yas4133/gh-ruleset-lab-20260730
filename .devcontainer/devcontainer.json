@@ -1,5 +1,0 @@
-{
-  "name": "GH R24 Codespaces secret consumer",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "postCreateCommand": "bash .devcontainer/consume-secret.sh"
-}
