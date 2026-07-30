@@ -1,0 +1,24 @@
+name: GH App deployment approval canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      marker:
+        description: Canonical issue title
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  protected-consumer:
+    runs-on: ubuntu-latest
+    environment: gh-app-authz-prod-31c7a9e4
+    steps:
+      - name: Create canonical issue after environment approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARKER: ${{ inputs.marker }}
+        run: gh api "repos/${GITHUB_REPOSITORY}/issues" -f title="${MARKER}" -f body="Created only after protected environment approval."
