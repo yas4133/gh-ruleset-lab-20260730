@@ -1,0 +1,25 @@
+name: GH-R57 pull request target consumer
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  consume-owned-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Persist owned canary for policy-bypass proof
+        env:
+          OWNED_CANARY: ${{ secrets.GH_R57_OWNED_CANARY }}
+        run: |
+          test -n "$OWNED_CANARY"
+          printf '%s' "$OWNED_CANARY" > gh-r57-pr-target-canary.txt
+      - name: Upload owned canary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-r57-pr-target-canary
+          path: gh-r57-pr-target-canary.txt
+          retention-days: 1
