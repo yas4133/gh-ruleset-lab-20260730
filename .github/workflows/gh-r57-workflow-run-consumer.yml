@@ -1,0 +1,33 @@
+name: GH-R57 workflow-run consumer
+
+on:
+  workflow_run:
+    workflows: ["GH-R57 owned policy canary"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  forbidden-workflow-run-consumer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record event principals
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ORIGINAL_ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          printf 'event=%s\nactor=%s\ntriggering_actor=%s\n' "$EVENT_NAME" "$ORIGINAL_ACTOR" "$TRIGGERING_ACTOR"
+      - name: Build owned secret evidence
+        env:
+          OWNED_CANARY: ${{ secrets.GH_R57_OWNED_CANARY }}
+        run: |
+          umask 077
+          printf '%s' "$OWNED_CANARY" > canary.txt
+      - name: Upload owned secret evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-r57-forbidden-workflow-run-${{ github.run_id }}
+          path: canary.txt
+          retention-days: 1
