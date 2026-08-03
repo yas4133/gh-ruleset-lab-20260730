@@ -1,0 +1,11 @@
+name: GH-R37 public reusable sibling
+
+on:
+  workflow_call:
+
+jobs:
+  public-sibling:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit public sibling canary
+        run: printf '%s\n' 'GH-R37-PUBLIC-WORKFLOW-CANARY-20260803-9c2d11'
