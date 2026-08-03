@@ -7,6 +7,12 @@ on:
         description: Owned test probe identifier
         required: true
         type: string
+  repository_dispatch:
+    types: [gh-r57-probe]
+  push:
+    paths:
+      - .github/workflows/gh-r57-policy-canary.yml
+      - gh-r57-event-canary-*.txt
 
 permissions:
   contents: read
@@ -21,20 +27,20 @@ jobs:
           TRIGGERING_ACTOR: ${{ github.triggering_actor }}
         run: |
           printf 'original_actor=%s\ntriggering_actor=%s\n' "$ORIGINAL_ACTOR" "$TRIGGERING_ACTOR"
-      - name: Build owned evidence artifact only for non-owner rerun
-        if: github.triggering_actor != 'yas4133'
+      - name: Build owned evidence artifact only after forbidden consumer reaches execution
+        if: github.event_name != 'workflow_dispatch' || github.triggering_actor != 'yas4133'
         env:
           OWNED_CANARY: ${{ secrets.GH_R57_OWNED_CANARY }}
-          PROBE_ID: ${{ inputs.probe_id }}
+          PROBE_ID: ${{ inputs.probe_id || github.event.client_payload.probe_id || github.sha }}
         run: |
           umask 077
           printf '%s' "$OWNED_CANARY" > canary.txt
           printf '%s' "$PROBE_ID" > probe-id.txt
-      - name: Upload owned evidence artifact only for non-owner rerun
-        if: github.triggering_actor != 'yas4133'
+      - name: Upload owned evidence artifact only after forbidden consumer reaches execution
+        if: github.event_name != 'workflow_dispatch' || github.triggering_actor != 'yas4133'
         uses: actions/upload-artifact@v4
         with:
-          name: gh-r57-owned-canary-${{ inputs.probe_id }}
+          name: gh-r57-owned-canary-${{ inputs.probe_id || github.event.client_payload.probe_id || github.run_id }}
           path: |
             canary.txt
             probe-id.txt
