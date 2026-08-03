@@ -15,7 +15,14 @@ jobs:
   export-owned-canary:
     runs-on: ubuntu-latest
     steps:
-      - name: Build owned evidence artifact
+      - name: Record rerun principal boundary
+        env:
+          ORIGINAL_ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          printf 'original_actor=%s\ntriggering_actor=%s\n' "$ORIGINAL_ACTOR" "$TRIGGERING_ACTOR"
+      - name: Build owned evidence artifact only for non-owner rerun
+        if: github.triggering_actor != 'yas4133'
         env:
           OWNED_CANARY: ${{ secrets.GH_R57_OWNED_CANARY }}
           PROBE_ID: ${{ inputs.probe_id }}
@@ -23,7 +30,8 @@ jobs:
           umask 077
           printf '%s' "$OWNED_CANARY" > canary.txt
           printf '%s' "$PROBE_ID" > probe-id.txt
-      - name: Upload owned evidence artifact
+      - name: Upload owned evidence artifact only for non-owner rerun
+        if: github.triggering_actor != 'yas4133'
         uses: actions/upload-artifact@v4
         with:
           name: gh-r57-owned-canary-${{ inputs.probe_id }}
