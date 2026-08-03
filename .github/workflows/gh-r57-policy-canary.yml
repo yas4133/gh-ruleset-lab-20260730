@@ -1,0 +1,33 @@
+name: GH-R57 owned policy canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe_id:
+        description: Owned test probe identifier
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  export-owned-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build owned evidence artifact
+        env:
+          OWNED_CANARY: ${{ secrets.GH_R57_OWNED_CANARY }}
+          PROBE_ID: ${{ inputs.probe_id }}
+        run: |
+          umask 077
+          printf '%s' "$OWNED_CANARY" > canary.txt
+          printf '%s' "$PROBE_ID" > probe-id.txt
+      - name: Upload owned evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-r57-owned-canary-${{ inputs.probe_id }}
+          path: |
+            canary.txt
+            probe-id.txt
+          retention-days: 1
