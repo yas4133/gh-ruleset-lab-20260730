@@ -1,0 +1,14 @@
+# This workflow is managed by gh actions-lock.
+
+name: GH-R263 reusable lock transition control
+
+on:
+  workflow_dispatch:
+
+jobs:
+  direct-lock-control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+  call-owned-provider:
+    uses: yas413/gh-r262-lock-provider-20260811/.github/workflows/reusable.yml@wf-v1
