@@ -1,12 +1,9 @@
 # This workflow is managed by gh actions-lock.
 
-name: GH-R262 anchor alias parser control
+name: GH-R262 locked-tag transition control
 
 on:
   workflow_dispatch:
-
-env:
-  GH_R262_ACTION: &gh_r262_action yas413/gh-r221-owned-action-20260810@main
 
 jobs:
   control:
@@ -14,7 +11,7 @@ jobs:
     steps:
       - name: Direct locked control
         uses: actions/checkout@v7.0.1
-      - name: Alias-selected action
-        uses: *gh_r262_action
+      - name: Locked external tag
+        uses: yas413/gh-r262-lock-provider-20260811@v1
       - name: Harmless completion marker
         run: echo GH_R262_CONTROL_COMPLETE

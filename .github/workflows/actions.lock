@@ -5,9 +5,15 @@ version: 'v0.0.2'
 workflows:
     '.github/workflows/gh-r262-anchor-alias.yml':
         - 'actions/checkout@v7.0.1'
+        - 'yas413/gh-r262-lock-provider-20260811@v1'
 dependencies:
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
+    'yas413/gh-r262-lock-provider-20260811@v1':
+        ref: 'v1'
+        commit: 'sha1-cff0606eec506ba8bdfbf16e6b594f88b9899164'
+        owner_id: 63714025
+        repo_id: 1330656253
