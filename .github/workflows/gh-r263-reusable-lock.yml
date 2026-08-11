@@ -5,6 +5,9 @@ name: GH-R263 reusable lock transition control
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   direct-lock-control:
     runs-on: ubuntu-latest
